@@ -1,0 +1,277 @@
+class employee:
+    def __init__(self,salary,name,phone,email,Type):
+        self.salary=salary
+        self.name=name
+        self.phone=phone
+        self.email=email
+        self.Type=Type
+    def display(self):
+        print("Name:",self.name)
+        print("Salary:",self.salary)
+        print("Phone no:",self.phone)
+        print("ID:",self.email)
+        print("Type:",self.Type)
+class waiter(employee):
+    def __init__(self,salary,name,phone,email,Type):
+        super().__init__(salary,name,phone,email,Type)
+    def IDgetter(self):
+        return self.email
+    def display(self):
+        super().display()
+class manager(employee):
+    def __init__(self,salary,name,phone,email,Type):
+        super().__init__(salary,name,phone,email,Type)
+    def IDgetter(self):
+        return self.email
+    def display(self):
+        super().display()
+class menu:
+    def __init__(self):
+        self.dict={}
+    def additem(self,itemobj):
+        self.itemobj=itemobj
+        self.dict[self.itemobj.item]=self.itemobj.price
+    def removeitem(self,item):
+        self.dict.pop(item)
+    def change(self,name,nprice):
+        self.dict[nprice]=name
+    def print(self):
+        print("    MENU    ")
+        print("-------------")
+        print("ITEM   PRICE")
+        print("-------------")
+        for i in self.dict:
+            print(i,self.dict[i])
+        print("-------------")
+class item:
+    def __init__(self,item,price):
+        self.item=item
+        self.price=price
+    def printitem(self):
+        print(self.item,self.price)
+class billing:
+    def __init__(self,orderid):
+        self.orderid=orderid
+        self.totalprice=0
+    def addbill(self,menuobj,food,quantity):
+        x=menuobj.dict[food]
+        self.totalprice=self.totalprice+quantity*x
+    def total(self,discount):
+        print("Total=",self.totalprice)
+        print("discount=",discount)
+        print("--------------")
+        print("AmountDue=",self.totalprice-discount)
+class customer:
+    def __init__(self,name,no_of_people,orderid):
+        self.name=name
+        self.no_of_people=no_of_people
+        self.orderid=orderid
+        self.billingobj=billing(orderid)
+        self.product={}
+        self.l=[]
+    def bill(self,menuobj,food,quantity):
+        y=int(menuobj.dict[food])
+        self.product[food]=quantity*y
+        self.l.append(quantity)
+        self.billingobj.addbill(menuobj,food,quantity)
+    def printinfo(self):
+        print("Name:",self.name)
+        print("No of people:",self.no_of_people)
+        print("OrderID:",self.orderid)
+    def totalbill(self,discount):
+        print("    BILL     ")
+        print("OrderID:",self.billingobj.orderid)
+        print("--------------")
+        print("ITEM  QTY  TOTAL")
+        n=0
+        for i in self.product:
+            print(i,self.l[n],self.product[i])
+            n=n+1
+        print("--------------")
+        self.billingobj.total(discount)
+from tkinter import *
+def main():
+    menuobj=menu()
+    stafflist=[]
+    d={}
+    itemd={}
+    clist=[]
+    def staff():
+        def register():
+            if str(ent5.get())=="waiter":
+                waiterobj=waiter(ent2.get(),ent1.get(),ent3.get(),ent4.get(),ent5.get())
+                stafflist.append(waiterobj)
+            else:
+                managerobj=manager(ent2.get(),ent1.get(),ent3.get(),ent4.get(),ent5.get())
+                stafflist.append(managerobj)
+        def file():
+            n=1
+            for i in stafflist:
+                print("EMPLOYEE",n)
+                i.display()
+                n=n+1
+        def remove():
+            for i in stafflist:
+                if str(ent6.get())==i.IDgetter():
+                    stafflist.remove(i)
+        def displayer():
+            for i in stafflist:
+                if str(ent7.get())==i.IDgetter():
+                    i.display()
+        root=Tk()
+        root.title("STAFF MANAGEMENT")
+        root.geometry("1000x500")
+        heading1=Label(root,text="STAFF MANAGING",font=("arial",25,"bold")).place(x=400,y=0)
+        heading2=Label(root,text="For registering new employee",font=("arial",15),bg="seagreen").place(x=20,y=50)
+        heading2=Label(root,text="For firing the employee",font=("arial",15),bg="seagreen").place(x=430,y=50)
+        heading2=Label(root,text="Employee finder",font=("arial",15),bg="seagreen").place(x=800,y=50)
+        t1=Label(root,text="Enter Name",bg="grey").place(x=0,y=90)
+        t2=Label(root,text="Enter Salary",bg="grey").place(x=0,y=120)
+        t3=Label(root,text="Enter PHONENO",bg="grey").place(x=0,y=150)
+        t4=Label(root,text="Enter STAFF ID",bg="grey").place(x=0,y=180)
+        t5=Label(root,text="TYPE (manager/waiter)",bg="grey").place(x=0,y=210)
+        t6=Label(root,text="Enter STAFF ID",bg="grey").place(x=430,y=90)
+        t7=Label(root,text="Enter STAFF ID",bg="grey").place(x=750,y=90)
+        ent1=Entry(root)
+        ent1.place(x=150,y=90)
+        ent2=Entry(root)
+        ent2.place(x=150,y=120)
+        ent3=Entry(root)
+        ent3.place(x=150,y=150)
+        ent4=Entry(root)
+        ent4.place(x=150,y=180)
+        ent5=Entry(root)
+        ent5.place(x=150,y=210)
+        ent6=Entry(root)
+        ent6.place(x=520,y=90)
+        ent7=Entry(root)
+        ent7.place(x=850,y=90)
+        btn=Button(root,text="REGISTER EMPLOYEE!",bg="lightgreen",command=register).place(x=90,y=240)
+        btn=Button(root,text="DISPLAY ALL EMPLOYEE'S INFO",bg="red",command=file,height = 3, width = 30,).place(x=550,y=400)
+        btn=Button(root,text="REMOVE/FIRE !",command=remove,bg="lightgreen").place(x=520,y=120)
+        btn=Button(root,text="PRINT INFO!",command=displayer,bg="lightgreen").place(x=850,y=120)
+        root.mainloop()
+    def menumaking():
+        def add():
+            itemobj=item(ent1.get(),int(ent2.get()))
+            itemd[ent1.get()]=int(ent2.get())
+            menuobj.additem(itemobj)
+            print("ITEM added successfully")
+        def remove():
+            menuobj.removeitem(ent3.get())
+            print("ITEM removed successfully")
+        def display():
+            menuobj.print()
+        def modify():
+            menuobj.change(ent4.get(),ent5.get())
+            print("ITEM modified successfully")
+        root=Tk()
+        root.title("MENU")
+        root.geometry("1000x500")
+        heading1=Label(root,text="MENU MAKING",font=("arial",30,"bold")).place(x=400,y=0)
+        heading2=Label(root,text="ADD ITEM",font=("arial",25,"bold"),bg="seagreen").place(x=20,y=50)
+        heading3=Label(root,text="REMOVE ITEM",font=("arial",25,"bold"),bg="seagreen").place(x=430,y=50)
+        heading3=Label(root,text="MODIFY",font=("arial",25,"bold"),bg="seagreen").place(x=830,y=50)
+        t1=Label(root,text="Enter Product name",bg="grey").place(x=0,y=130)
+        t2=Label(root,text="Enter Product price",bg="grey").place(x=0,y=160)
+        t3=Label(root,text="Enter Product name",bg="grey").place(x=400,y=130)
+        t4=Label(root,text="Enter Product name",bg="grey").place(x=750,y=130)
+        t5=Label(root,text="Enter New price",bg="grey").place(x=750,y=160)
+        ent1=Entry(root)
+        ent1.place(x=150,y=130)
+        ent2=Entry(root)
+        ent2.place(x=150,y=160)
+        ent3=Entry(root)
+        ent3.place(x=520,y=130)
+        ent4=Entry(root)
+        ent4.place(x=860,y=160)
+        ent5=Entry(root)
+        ent5.place(x=860,y=130)
+        btn=Button(root,text="ADD TO MENU",bg="lightgreen",command=add).place(x=60,y=200)
+        btn=Button(root,text="REMOVE ITEM",command=remove,bg="lightgreen").place(x=520,y=160)
+        btn=Button(root,text="MODIFY",command=modify,bg="lightgreen").place(x=850,y=200)
+        btn=Button(root,text="DISPLAY MENU",bg="red",command=display,height = 3, width = 30,).place(x=550,y=400)
+    def order():
+        def info():
+            global cobj
+            cobj=customer(ent1.get(),ent2.get(),ent3.get())
+            clist.append(cobj)
+            print("Customer Info added successfully")
+        def add():
+            cobj.bill(menuobj,ent4.get(),int(ent5.get()))
+            if ent4.get() not in d:
+                d[ent4.get()]=int(ent5.get())
+            else:
+                k=d[ent4.get()]+int(ent5.get())
+                d[ent4.get()]=k
+            print("Items added to bill successfully")
+        def printer():
+            cobj.totalbill((int(ent6.get())))
+        root=Tk()
+        root.title("NEW ORDER")
+        root.geometry("1000x500")
+        heading1=Label(root,text="Taking Order",font=("arial",30,"bold")).place(x=400,y=0)
+        heading2=Label(root,text="Customer Info",font=("arial",25,"bold"),bg="seagreen").place(x=20,y=50)
+        heading3=Label(root,text="Adding Products",font=("arial",25,"bold"),bg="seagreen").place(x=410,y=50)
+        heading3=Label(root,text="Finalizing Bill",font=("arial",25,"bold"),bg="seagreen").place(x=780,y=50)
+        t1=Label(root,text="Customer Name",bg="grey").place(x=0,y=130)
+        t2=Label(root,text="No Of People",bg="grey").place(x=0,y=160)
+        t3=Label(root,text="Order ID",bg="grey").place(x=0,y=190)
+        t4=Label(root,text="Item Name",bg="grey").place(x=430,y=130)
+        t5=Label(root,text="Item Quantity",bg="grey").place(x=430,y=160)
+        t4=Label(root,text="Discount",bg="grey").place(x=780,y=130)
+        ent1=Entry(root)
+        ent1.place(x=150,y=130)
+        ent2=Entry(root)
+        ent2.place(x=150,y=160)
+        ent3=Entry(root)
+        ent3.place(x=150,y=190)
+        ent4=Entry(root)
+        ent4.place(x=520,y=130)
+        ent5=Entry(root)
+        ent5.place(x=520,y=160)
+        ent6=Entry(root)
+        ent6.place(x=850,y=130)
+        btn=Button(root,text="ADD INFO",bg="lightgreen",command=info).place(x=80,y=240)
+        btn=Button(root,text="ADD TO BILL",bg="lightgreen",command=add).place(x=520,y=200)
+        btn=Button(root,text="GET BILL",bg="lightgreen",command=printer).place(x=860,y=170)
+    def total():
+        print("-------------------------")
+        print("ITEM TOTALSALES TOTALCOST")
+        s=0
+        for i in d:
+            if i in itemd:
+                print(i,d[i],(d[i]*itemd[i]))
+                s=s+(d[i]*itemd[i])
+        print("-------------------------")
+        print("TOTAL EARNING",s)
+    def info():
+        print("-------------------------")
+        n=1
+        for i in clist:
+            print("CUSTOMER NO",n)
+            i.printinfo()
+            n=n+1
+    root=Tk()
+    root.title("RESTAURANT MANAGEMENT SYSTEM")
+    root.geometry("1000x500")
+    heading1=Label(root,text="Welcome to Shed 99",font=("arial",30,"bold"),fg="darkblue").place(x=150,y=20)
+    heading2=Label(root,text=">For Managing the Staff                 ==>",font=("arial",20),fg="black").place(x=150,y=130)
+    heading3=Label(root,text=">For Making and Modifying Menu   ==>",font=("arial",20),fg="black").place(x=150,y=240)
+    heading4=Label(root,text=">For Taking New Orders                 ==>",font=("arial",20),fg="black").place(x=150,y=350)
+    btn=Button(root,text="MANAGING STAFF",command=staff, height = 6, width = 17,bg="grey").place(x=650,y=90)
+    btn1=Button(root,text="MENU MAKING",command=menumaking, height = 6, width = 17,bg="grey").place(x=650,y=210)
+    btn2=Button(root,text="FOR ORDER",command=order, height = 6, width = 17,bg="grey").place(x=650,y=330)
+    btn3=Button(root,text="Total Sales",command=total, height = 2, width = 17,bg="grey").place(x=650,y=450)
+    btn4=Button(root,text="Customer Info",command=info, height = 2, width = 17,bg="grey").place(x=470,y=450)
+    root.mainloop()                                                                                                   
+main()
+    
+    
+    
+
+
+
+        
+        
+
